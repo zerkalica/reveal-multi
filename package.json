@@ -1,13 +1,13 @@
 {
-  "name": "reveal-gen",
+  "name": "reveal-multi",
   "version": "1.0.0",
   "description": "Generate multiple reveal.js slides from multiple directories",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zerkalica/reveal-gen"
+    "url": "https://github.com/zerkalica/reveal-multi"
   },
   "bin": {
-    "hapi-bouncer": "bin/reveal-gen"
+    "reveal-multi": "bin/reveal-multi"
   },
   "config": {
     "builddir": "."

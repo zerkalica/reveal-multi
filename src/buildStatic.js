@@ -14,7 +14,7 @@ function bufferToObject(buf: Buffer): Object {
 
 export default function buildStatic(options: IBuildOptions): Promise<IBuildInfo> {
     const {srcDir, destDir} = options
-    const projectConfig = path.join(srcDir, 'reveal-gen.json')
+    const projectConfig = path.join(srcDir, 'reveal-multi.json')
     return fs.pathExists(projectConfig)
         .then((exists: boolean) =>
             exists

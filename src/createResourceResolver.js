@@ -1,7 +1,7 @@
 // @flow
 import _debug from 'debug'
 
-const debug = _debug('reveal-gen:createResourceResolver')
+const debug = _debug('reveal-multi:createResourceResolver')
 
 export default function createResourceResolver(
     resolve: (moduleName: string) => string

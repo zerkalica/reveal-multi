@@ -1,7 +1,7 @@
 // @noflow
 
 ;(function(w) {
-    w.RevealGen = {
+    w.RevealMulti = {
         init: function(options) {
             var params = new URLSearchParams(document.location.search)
             var secret = params.get('secret') || null

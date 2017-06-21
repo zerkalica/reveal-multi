@@ -13,7 +13,7 @@ import type {IBuildInfo, ICreds} from './interfaces'
 import createCreds, {createHash} from './createCreds'
 import _debug from 'debug'
 
-const debug = _debug('reveal-gen:createServer')
+const debug = _debug('reveal-multi:createServer')
 
 function createGetSecretItem(creds: ICreds): (dir: string) => string {
     return function getSecretItem(dir: string): string {

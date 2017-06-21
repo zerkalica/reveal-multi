@@ -19,19 +19,19 @@ const defaultConfig: IConfig = {
         '{reveal.js}/plugin/multiplex/master.js',
         '{reveal.js}/plugin/print-pdf',
         '{reveal.js}/plugin/search',
-        '{reveal-gen}/rgs',
+        '{reveal-multi}/rgs',
         '{highlight.js}/styles',
         '{socket.io-client}/dist/socket.io.js'
     ],
     js: [
         '{reveal.js}/lib/js/head.min.js',
         '{reveal.js}/js/reveal.js',
-        '{reveal-gen}/rgs/reveal-gen.js',
+        '{reveal-multi}/rgs/reveal-multi.js',
     ],
     css: [
         '{reveal.js}/css/reveal.css',
         '{highlight.js}/styles/dracula.css',
-        '{reveal-gen}/rgs/custom.css'
+        '{reveal-multi}/rgs/custom.css'
     ],
     cssPrint: [
         '{reveal.js}/css/print/paper.css'

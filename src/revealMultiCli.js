@@ -7,7 +7,7 @@ import createServer from './createServer'
 import buildStatic from './buildStatic'
 import type {IRunOptions, IBuildOptions, IBuildInfo} from './interfaces'
 
-export default function revealGenCli(options: IRunOptions): Promise<void> {
+export default function revealMultiCli(options: IRunOptions): Promise<void> {
     const staticPromise = buildStatic(options)
     let result: Promise<void>
     if (options.runServer) {

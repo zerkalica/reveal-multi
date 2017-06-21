@@ -2,7 +2,7 @@
 
 var path = require('path')
 var yargs = require('yargs')
-var revealGenCli = require('reveal-gen/dist/revealGenCli').default
+var revealmultiCli = require('reveal-multi/dist/revealMultiCli').default
 
 var argsBuilder = yargs
     .usage('$0 --server --in --out --verbose')
@@ -24,18 +24,18 @@ var argsBuilder = yargs
     .describe('server', 'Run dev server')
     .describe('in', 'Root directory with projects')
     .describe('out', 'Destination directory')
-    .epilog('For more information see https://github.com/zerkalica/reveal-gen')
+    .epilog('For more information see https://github.com/zerkalica/reveal-multi')
 
 var args = argsBuilder.argv
 
 if (args.verbose) {
-    process.env.DEBUG = 'reveal-gen:*'
+    process.env.DEBUG = 'reveal-multi:*'
 }
 
 if (args.examples) {
-    revealGenCli({
+    revealmultiCli({
         srcDir: path.join(__dirname, '..', 'examples'),
-        destDir: 'reveal-gen-example-docs',
+        destDir: 'reveal-multi-example-docs',
         runServer: true
     })
 } else {
@@ -45,5 +45,5 @@ if (args.examples) {
         runServer: args.server
     }
 
-    revealGenCli(options)
+    revealMultiCli(options)
 }
