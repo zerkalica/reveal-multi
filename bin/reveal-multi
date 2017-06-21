@@ -2,7 +2,7 @@
 
 var path = require('path')
 var yargs = require('yargs')
-var revealmultiCli = require('reveal-multi/dist/revealMultiCli').default
+var revealMultiCli = require('reveal-multi/dist/revealMultiCli').default
 
 var argsBuilder = yargs
     .usage('$0 --server --in --out --verbose')
@@ -33,7 +33,7 @@ if (args.verbose) {
 }
 
 if (args.examples) {
-    revealmultiCli({
+    revealMultiCli({
         srcDir: path.join(__dirname, '..', 'examples'),
         destDir: 'reveal-multi-example-docs',
         runServer: true
