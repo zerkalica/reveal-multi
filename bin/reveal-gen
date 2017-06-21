@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+var path = require('path')
+var yargs = require('yargs')
+var revealGenCli = require('reveal-gen/dist/revealGenCli').default
+
+var argsBuilder = yargs
+    .usage('$0 --server --in --out --verbose')
+    .alias('s', 'server')
+    .alias('v', 'verbose')
+    .alias('e', 'examples')
+    .alias('i', 'in')
+    .alias('o', 'out')
+    .example('$0 --server --in=./src --out=./docs')
+    .boolean('server')
+    .boolean('example')
+    .boolean('verbose')
+    .default('in', 'src')
+    .default('out', 'docs')
+    .help('h')
+    .alias('h', 'help')
+    .describe('examples', 'Run dev server with examples')
+    .describe('verbose', 'Verbose output')
+    .describe('server', 'Run dev server')
+    .describe('in', 'Root directory with projects')
+    .describe('out', 'Destination directory')
+    .epilog('For more information see https://github.com/zerkalica/reveal-gen')
+
+var args = argsBuilder.argv
+
+if (args.verbose) {
+    process.env.DEBUG = 'reveal-gen:*'
+}
+
+if (args.examples) {
+    revealGenCli({
+        srcDir: path.join(__dirname, '..', 'examples'),
+        destDir: 'reveal-gen-example-docs',
+        runServer: true
+    })
+} else {
+    var options = {
+        srcDir: args.in,
+        destDir: args.out,
+        runServer: args.server
+    }
+
+    revealGenCli(options)
+}

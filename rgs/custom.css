@@ -1,0 +1,25 @@
+
+@import url(../../reveal.js/css/theme/white.css);
+
+.reveal .speaker-notes {
+  padding: 3px;
+}
+
+.reveal .speaker-notes p {
+  margin: 0;
+  font-size: 90%;
+  line-height: 120%;
+}
+
+.reveal pre {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.reveal pre code {
+  max-height: 600px;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  text-transform: none;
+}
