@@ -55,7 +55,7 @@ export default function getPage({
             `<script src="${jsPath}"></script>`
         ).join("\n")}
         <script>
-            RevealGen.init(${JSON.stringify(revealOptions, replacer, '  ')
+            RevealMulti.init(${JSON.stringify(revealOptions, replacer, '  ')
                 .replace(/\"@@(.*?)@@\"/g, '$1')})
         </script>
     </body>
