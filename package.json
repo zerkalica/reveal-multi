@@ -13,7 +13,7 @@
     "builddir": "."
   },
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
     "clean": "rm -rf $npm_package_config_builddir/dist",
