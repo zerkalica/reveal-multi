@@ -8,7 +8,7 @@ import merge from './merge'
 import copyReveal from './copyReveal'
 import type {IBuildInfo, IBuildOptions, IConfig} from './interfaces'
 
-function bufferToObject(buf: Buffer): Object {
+function bufferToObject<V: Object>(buf: Buffer): V {
     return JSON.parse(buf.toString())
 }
 

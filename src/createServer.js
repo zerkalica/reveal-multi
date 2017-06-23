@@ -6,7 +6,7 @@ import http from 'http'
 import connect from 'connect'
 import SrMdl from 'middleware-static-livereload'
 import SocketIO from 'socket.io'
-import chokidar from 'chokidar'
+import serveStatic from 'serve-static'
 
 import getIndex from './getIndex'
 import type {IBuildInfo, ICreds} from './interfaces'
@@ -89,21 +89,14 @@ export default function createServer(
         fs.remove(getDestFilePath(p))
     }
 
-    const srcWatcher = chokidar.watch(srcDir)
-        .on('add', onFileChange)
-        .on('change', onFileChange)
-        .on('unlink', onFileRemove)
-
     app.use('/', createGetToken({dirs, creds}))
+    app.use('/common', serveStatic(path.join(destDir, 'common')))
     app.use(SrMdl({
         livereload: {
             exts: ['md']
         },
-        documentRoot: destDir
+        documentRoot: srcDir
     }))
-    server.on('close', () => {
-        srcWatcher.close()
-    })
     server.listen(port)
     return server
 }
