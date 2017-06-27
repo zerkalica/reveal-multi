@@ -54,10 +54,22 @@ export interface IBuildOptions {
     destDir: string;
 }
 
+export interface IRevealProject {
+    dir: string;
+    data: string;
+}
+
+export interface IRevealData {
+    index: {
+        data: string;
+    },
+    projects: IRevealProject[];
+}
+
 export interface IBuildInfo {
     config: IConfig;
     options: IBuildOptions;
-    dirs: string[];
+    data: IRevealData;
 }
 
 export interface IRunOptions extends IBuildOptions {

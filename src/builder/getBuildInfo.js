@@ -5,14 +5,14 @@ import path from 'path'
 
 import defaultConfig from './defaultConfig'
 import merge from './merge'
-import copyReveal from './copyReveal'
-import type {IBuildInfo, IBuildOptions, IConfig} from './interfaces'
+import createRevealData from './createRevealData'
+import type {IBuildInfo, IBuildOptions, IConfig, IRevealData} from '../interfaces'
 
 function bufferToObject<V: Object>(buf: Buffer): V {
     return JSON.parse(buf.toString())
 }
 
-export default function buildStatic(options: IBuildOptions): Promise<IBuildInfo> {
+export default function getBuildInfo(options: IBuildOptions): Promise<IBuildInfo> {
     const {srcDir, destDir} = options
     const projectConfig = path.join(srcDir, 'reveal-multi.json')
     return fs.pathExists(projectConfig)
@@ -25,11 +25,11 @@ export default function buildStatic(options: IBuildOptions): Promise<IBuildInfo>
         )
         .then((config: IConfig) => Promise.all([
             config,
-            copyReveal({destDir, srcDir, config})
+            createRevealData({destDir, srcDir, config})
         ]))
-        .then(([config, dirs]: [IConfig, string[]]) => ({
+        .then(([config, data]: [IConfig, IRevealData]) => ({
             config,
             options,
-            dirs
+            data
         }))
 }

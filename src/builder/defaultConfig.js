@@ -1,5 +1,5 @@
 // @flow
-import type {IConfig} from './interfaces'
+import type {IConfig} from '../interfaces'
 
 const defaultConfig: IConfig = {
     __push__: ['resourceDirs', 'dependencies', 'js', 'css', 'cssPrint'],

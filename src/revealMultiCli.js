@@ -3,23 +3,28 @@
 import fs from 'fs-extra'
 import path from 'path'
 import type {Server} from 'http'
+import {getBuildInfo} from './builder'
+import type {IRunOptions, IBuildOptions, IBuildInfo, IRevealProject} from './interfaces'
+
+import createStaticSite from './createStaticSite'
 import createServer from './createServer'
-import buildStatic from './buildStatic'
-import type {IRunOptions, IBuildOptions, IBuildInfo} from './interfaces'
 
 export default function revealMultiCli(options: IRunOptions): Promise<void> {
-    const staticPromise = buildStatic(options)
     let result: Promise<void>
+
     if (options.runServer) {
-        result = staticPromise
+        result = getBuildInfo(options)
+            .then(createStaticSite)
             .then(createServer)
             .then((server: Server) => {
                 console.log(`open http://localhost:${server.address().port}/`)
             })
     } else {
-        result = staticPromise
+        result = getBuildInfo(options)
+            .then(createStaticSite)
             .then((info: IBuildInfo) => {
-                console.log(`${info.dirs.join(', ')} builded in ${info.options.destDir}`)
+                console.log(`${info.data.projects
+                    .map((ri: IRevealProject) => ri.dir).join(', ')} builded in ${info.options.destDir}`)
             })
     }
 

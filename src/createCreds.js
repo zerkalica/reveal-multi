@@ -5,7 +5,7 @@ import type {ICreds} from './interfaces'
 
 function createSecret(): string {
     const ts = new Date().getTime()
-    const rand = Math.floor(Math.random()*9999999)
+    const rand = Math.floor(Math.random() * 9999999)
     const secret = ts.toString() + rand.toString()
 
     return secret

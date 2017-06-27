@@ -45,7 +45,6 @@
   "author": "Stefan Zerkalica <zerkalica@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "chokidar": "^1.7.0",
     "connect": "^3.6.2",
     "debug": "^2.6.8",
     "find-root": "^1.0.0",

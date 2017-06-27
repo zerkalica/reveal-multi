@@ -1,6 +1,6 @@
 // @flow
 
-import type {IRevealOptions} from './interfaces'
+import type {IRevealOptions} from '../interfaces'
 
 function replacer(key: string, val: mixed): mixed {
     if (
@@ -40,6 +40,10 @@ export default function getPage({
         ${cssPrint.map((cssPath: string) =>
             `<link rel="stylesheet" href="${cssPath}" media="print">`
         ).join("\n")}
+        <script>
+            document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+            ':35729/livereload.js?snipver=1"></' + 'script>')
+        </script>
     </head>
     <body>
         <div class="reveal">

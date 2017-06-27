@@ -4,14 +4,15 @@ import fs from 'fs-extra'
 import path from 'path'
 import http from 'http'
 import connect from 'connect'
+import {parse} from 'url'
 import SrMdl from 'middleware-static-livereload'
 import SocketIO from 'socket.io'
 import serveStatic from 'serve-static'
 
-import getIndex from './getIndex'
-import type {IBuildInfo, ICreds} from './interfaces'
+import type {IBuildInfo, ICreds, IRevealProject} from './interfaces'
 import createCreds, {createHash} from './createCreds'
 import _debug from 'debug'
+import getIndex from './common/getIndex'
 
 const debug = _debug('reveal-multi:createServer')
 
@@ -23,18 +24,33 @@ function createGetSecretItem(creds: ICreds): (dir: string) => string {
     }
 }
 
-function createGetToken({creds, dirs}: {
-    creds: ICreds;
+
+function escapeRegExp(string: string): string {
+    return string.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1")
+}
+
+function createGetToken({baseUrl, dirs, indexPage, projects}: {
+    indexPage: string;
     dirs: string[];
+    baseUrl: string;
+    projects: {[id: string]: string};
 }) {
+    const mask = `^/(${dirs.map(escapeRegExp).join('|')})/(?:index.html?)?$`
+    const dirMatch = new RegExp(mask)
+
+    debug('mask: ' + mask)
+
     return function getToken(req: http.ClientRequest, res: http.ServerResponse, next: () => void) {
-        const url = req.url || ''
-        const isParamsExists = url !== '/'
-        if (!isParamsExists) {
-            res.end(getIndex({
-                dirs,
-                getItem: createGetSecretItem(creds)
-            }))
+        if (typeof req.url !== 'string') {throw new Error('req.url not found')}
+        const parts = parse(`http://localhost${req.url}`)
+        const pathname = parts.pathname || ''
+        const found: ?string[] = pathname.match(dirMatch)
+        debug('pathname: ' + pathname)
+        if (found) {
+            debug('found: ' + found[1])
+            res.end(projects[found[1]])
+        } else if (pathname === '/') {
+            res.end(indexPage)
         } else {
             next()
         }
@@ -64,7 +80,7 @@ function createSocketIO(httpServer: http.Server): () => void {
 export default function createServer(
     {
         options,
-        dirs,
+        data,
         config
     }: IBuildInfo,
     creds?: ICreds = createCreds()
@@ -75,21 +91,23 @@ export default function createServer(
     const server = http.createServer(app)
     createSocketIO(server)
 
-    function getDestFilePath(srcFilePath: string): string {
-        return path.join(destDir, srcFilePath.substring(srcDir.length))
+    const projects: {[id: string]: string} = {}
+    const dirs: string[] = []
+    for (let i = 0 ; i < data.projects.length; i++) {
+        const project = data.projects[i]
+        projects[project.dir] = project.data
+        dirs.push(project.dir)
     }
 
-    function onFileChange(p: string) {
-        debug(`copy ${p} ${getDestFilePath(p)}`)
-        fs.copy(p, getDestFilePath(p))
-    }
-
-    function onFileRemove(p: string) {
-        debug(`remove ${getDestFilePath(p)}`)
-        fs.remove(getDestFilePath(p))
-    }
-
-    app.use('/', createGetToken({dirs, creds}))
+    app.use(createGetToken({
+        projects,
+        indexPage: getIndex({
+            dirs,
+            getItem: createGetSecretItem(creds)
+        }),
+        dirs,
+        baseUrl: ''
+    }))
     app.use('/common', serveStatic(path.join(destDir, 'common')))
     app.use(SrMdl({
         livereload: {
