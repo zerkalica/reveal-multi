@@ -42,6 +42,15 @@ export interface IConfig {
     revealOptions: IRevealOptions;
 }
 
+export interface IGetPageOptions {
+    css: string[];
+    cssPrint: string[];
+    js: string[];
+    dir: string;
+    title: string;
+    fileName: string;
+    revealOptions: IRevealOptions;
+}
 
 export interface ICreds {
     secret: string;
@@ -54,22 +63,10 @@ export interface IBuildOptions {
     destDir: string;
 }
 
-export interface IRevealProject {
-    dir: string;
-    data: string;
-}
-
-export interface IRevealData {
-    index: {
-        data: string;
-    },
-    projects: IRevealProject[];
-}
-
 export interface IBuildInfo {
     config: IConfig;
     options: IBuildOptions;
-    data: IRevealData;
+    pages: IGetPageOptions[];
 }
 
 export interface IRunOptions extends IBuildOptions {

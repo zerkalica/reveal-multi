@@ -1,6 +1,6 @@
 // @flow
 
-import type {IRevealOptions} from '../interfaces'
+import type {IGetPageOptions} from '../interfaces'
 
 function replacer(key: string, val: mixed): mixed {
     if (
@@ -13,21 +13,17 @@ function replacer(key: string, val: mixed): mixed {
     return val
 }
 
-export default function getPage({
-    fileName,
-    title,
-    js,
-    css,
-    cssPrint,
-    revealOptions
-}: {
-    css: string[];
-    cssPrint: string[];
-    js: string[];
-    title: string;
-    fileName: string;
-    revealOptions: IRevealOptions;
-}): string {
+export default function getPage(
+    {
+        fileName,
+        title,
+        js,
+        css,
+        cssPrint,
+        revealOptions
+    }: IGetPageOptions,
+    liveReload?: boolean = false
+): string {
     return `<!doctype html>
 <html>
     <head>
@@ -40,10 +36,12 @@ export default function getPage({
         ${cssPrint.map((cssPath: string) =>
             `<link rel="stylesheet" href="${cssPath}" media="print">`
         ).join("\n")}
-        <script>
-            document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
-            ':35729/livereload.js?snipver=1"></' + 'script>')
-        </script>
+        ${liveReload ? `
+            <script>
+                document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+                ':35729/livereload.js?snipver=1"></' + 'script>')
+            </script>
+        ` : ''}
     </head>
     <body>
         <div class="reveal">

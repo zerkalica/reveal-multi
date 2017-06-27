@@ -5,17 +5,20 @@ import fs from 'fs-extra'
 
 import createResourceResolver from './common/createResourceResolver'
 import createModulePathResolve from './common/createModulePathResolve'
-import type {IConfig, IRevealDep, IRevealOptionGroup, IBuildInfo} from './interfaces'
+import type {IConfig, IRevealDep, IGetPageOptions, IBuildInfo} from './interfaces'
+import getPage from './common/getPage'
+import getIndex from './common/getIndex'
 
 export default function createStaticSite(
     info: IBuildInfo
 ): Promise<IBuildInfo> {
     const {
         config,
-        data,
+        pages,
         options
     } = info
-    const {index, projects} = data
+    const dirs = pages.map((opts: IGetPageOptions) => opts.dir)
+
     const {srcDir, destDir} = options
     const common = 'common'
     const commonDir = path.join(destDir, 'common')
@@ -39,9 +42,9 @@ export default function createStaticSite(
             fs.copy(srcDir, destDir)
         ]))
         .then(() => Promise.all([
-            fs.writeFile(path.join(destDir, 'index.html'), index.data),
-            Promise.all(projects.map((project) =>
-                fs.writeFile(path.join(destDir, project.dir, 'index.html'), project.data)
+            fs.writeFile(path.join(destDir, 'index.html'), getIndex({dirs})),
+            Promise.all(pages.map((page: IGetPageOptions) =>
+                fs.writeFile(path.join(destDir, page.dir, 'index.html'), getPage(page))
             ))
         ]))
         .then(() => info)

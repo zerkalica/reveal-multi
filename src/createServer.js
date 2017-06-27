@@ -9,10 +9,11 @@ import SrMdl from 'middleware-static-livereload'
 import SocketIO from 'socket.io'
 import serveStatic from 'serve-static'
 
-import type {IBuildInfo, ICreds, IRevealProject} from './interfaces'
+import type {IBuildInfo, ICreds, IGetPageOptions} from './interfaces'
 import createCreds, {createHash} from './createCreds'
 import _debug from 'debug'
 import getIndex from './common/getIndex'
+import getPage from './common/getPage'
 
 const debug = _debug('reveal-multi:createServer')
 
@@ -33,7 +34,7 @@ function createGetToken({baseUrl, dirs, indexPage, projects}: {
     indexPage: string;
     dirs: string[];
     baseUrl: string;
-    projects: {[id: string]: string};
+    projects: {[id: string]: IGetPageOptions};
 }) {
     const mask = `^/(${dirs.map(escapeRegExp).join('|')})/(?:index.html?)?$`
     const dirMatch = new RegExp(mask)
@@ -48,7 +49,7 @@ function createGetToken({baseUrl, dirs, indexPage, projects}: {
         debug('pathname: ' + pathname)
         if (found) {
             debug('found: ' + found[1])
-            res.end(projects[found[1]])
+            res.end(getPage(projects[found[1]], true))
         } else if (pathname === '/') {
             res.end(indexPage)
         } else {
@@ -80,7 +81,7 @@ function createSocketIO(httpServer: http.Server): () => void {
 export default function createServer(
     {
         options,
-        data,
+        pages,
         config
     }: IBuildInfo,
     creds?: ICreds = createCreds()
@@ -91,11 +92,11 @@ export default function createServer(
     const server = http.createServer(app)
     createSocketIO(server)
 
-    const projects: {[id: string]: string} = {}
+    const projects: {[id: string]: IGetPageOptions} = {}
     const dirs: string[] = []
-    for (let i = 0 ; i < data.projects.length; i++) {
-        const project = data.projects[i]
-        projects[project.dir] = project.data
+    for (let i = 0 ; i < pages.length; i++) {
+        const project = pages[i]
+        projects[project.dir] = project
         dirs.push(project.dir)
     }
 

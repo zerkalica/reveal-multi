@@ -9,13 +9,11 @@ import type {
     IConfig,
     IRevealDep,
     IRevealOptionGroup,
-    IRevealProject,
-    IRevealData
+    IGetPageOptions
 } from '../interfaces'
 import getIndex from '../common/getIndex'
 
 import createFilesToDirs from './createFilesToDirs'
-import getPage from './getPage'
 
 export default function createRevealData(
     {
@@ -25,7 +23,7 @@ export default function createRevealData(
         srcDir: string;
         config: IConfig;
     }
-): Promise<IRevealData> {
+): Promise<IGetPageOptions[]> {
     const common = 'common'
     const baseUrl = config.baseUrl
     const destUrlResolver = createResourceResolver(
@@ -62,19 +60,11 @@ export default function createRevealData(
 
     return fs.readdir(srcDir)
         .then(createFilesToDirs(srcDir))
-        .then((dirs: string[]) => ({
-            index: {
-                data: getIndex({
-                    dirs
-                })
-            },
-            projects: dirs.map((dir: string) => ({
+        .then((dirs: string[]) => dirs.map((dir: string) => ({
+                ...baseGetPageOptions,
                 dir,
-                data: getPage({
-                    ...baseGetPageOptions,
-                    title: dir,
-                    fileName: './index.md',
-                })
+                title: dir,
+                fileName: './index.md'
             }))
-        }))
+        )
 }
