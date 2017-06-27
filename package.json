@@ -1,6 +1,6 @@
 {
   "name": "reveal-multi",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generate multiple reveal.js slides from multiple directories",
   "repository": {
     "type": "git",
