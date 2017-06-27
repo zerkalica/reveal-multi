@@ -2,7 +2,7 @@
 import type {IConfig} from '../interfaces'
 
 const defaultConfig: IConfig = {
-    __push__: ['resourceDirs', 'dependencies', 'js', 'css', 'cssPrint'],
+    __push__: ['resourceDirs', 'dependencies', 'js'],
     removeDest: true,
     baseUrl: '..',
     port: 8080,
@@ -23,19 +23,23 @@ const defaultConfig: IConfig = {
         '{highlight.js}/styles',
         '{socket.io-client}/dist/socket.io.js'
     ],
-    js: [
-        '{reveal.js}/lib/js/head.min.js',
-        '{reveal.js}/js/reveal.js',
-        '{reveal-multi}/rgs/reveal-multi.js',
-    ],
-    css: [
-        '{reveal.js}/css/reveal.css',
-        '{highlight.js}/styles/dracula.css',
-        '{reveal-multi}/rgs/custom.css'
-    ],
-    cssPrint: [
-        '{reveal.js}/css/print/paper.css'
-    ],
+    resources: {
+        js: [
+            '{reveal.js}/lib/js/head.min.js',
+            '{reveal.js}/js/reveal.js',
+            '{reveal-multi}/rgs/reveal-multi.js',
+        ],
+        css: [
+            '{reveal.js}/css/reveal.css',
+            '{highlight.js}/styles/dracula.css',
+        ],
+        themeCss: [
+            { id:'custom', href: '{reveal-multi}/rgs/custom.css' }
+        ],
+        cssPrint: [
+            '{reveal.js}/css/print/paper.css'
+        ]
+    },
     revealOptions: {
         all: {
             showNotes: true,

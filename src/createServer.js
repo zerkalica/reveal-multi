@@ -30,10 +30,9 @@ function escapeRegExp(string: string): string {
     return string.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1")
 }
 
-function createGetToken({baseUrl, dirs, indexPage, projects}: {
+function createPageMiddleware({dirs, indexPage, projects}: {
     indexPage: string;
     dirs: string[];
-    baseUrl: string;
     projects: {[id: string]: IGetPageOptions};
 }) {
     const mask = `^/(${dirs.map(escapeRegExp).join('|')})/(?:index.html?)?$`
@@ -41,7 +40,7 @@ function createGetToken({baseUrl, dirs, indexPage, projects}: {
 
     debug('mask: ' + mask)
 
-    return function getToken(req: http.ClientRequest, res: http.ServerResponse, next: () => void) {
+    return function pageMiddleware(req: http.ClientRequest, res: http.ServerResponse, next: () => void) {
         if (typeof req.url !== 'string') {throw new Error('req.url not found')}
         const parts = parse(`http://localhost${req.url}`)
         const pathname = parts.pathname || ''
@@ -85,7 +84,7 @@ export default function createServer(
         config
     }: IBuildInfo,
     creds?: ICreds = createCreds()
-): http.Server {
+): Promise<http.Server> {
     const app = connect()
     const {destDir, srcDir} = options
     const {port} = config
@@ -100,14 +99,13 @@ export default function createServer(
         dirs.push(project.dir)
     }
 
-    app.use(createGetToken({
+    app.use(createPageMiddleware({
         projects,
         indexPage: getIndex({
             dirs,
             getItem: createGetSecretItem(creds)
         }),
-        dirs,
-        baseUrl: ''
+        dirs
     }))
     app.use('/common', serveStatic(path.join(destDir, 'common')))
     app.use(SrMdl({
@@ -116,6 +114,19 @@ export default function createServer(
         },
         documentRoot: srcDir
     }))
-    server.listen(port)
-    return server
+
+    return new Promise(
+        (
+            resolve: (server: http.Server) => void,
+            reject: (e: Error) => void
+        ) => {
+            server.listen((port: any), (err: ?Error) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(server)
+                }
+            })
+        }
+    )
 }

@@ -9,7 +9,9 @@ import type {
     IConfig,
     IRevealDep,
     IRevealOptionGroup,
-    IGetPageOptions
+    IGetPageOptions,
+    IThemeCssRec,
+    IPageResources
 } from '../interfaces'
 import getIndex from '../common/getIndex'
 
@@ -25,7 +27,7 @@ export default function createRevealData(
     }
 ): Promise<IGetPageOptions[]> {
     const common = 'common'
-    const baseUrl = config.baseUrl
+    const {baseUrl} = config
     const destUrlResolver = createResourceResolver(
         (moduleName: string) =>
             moduleName === 'root'
@@ -46,22 +48,33 @@ export default function createRevealData(
         }
     }
 
-    const opts = config.revealOptions
-    const baseGetPageOptions = {
-        js: config.js.map(destUrlResolver),
-        css: config.css.map(destUrlResolver),
-        cssPrint: config.cssPrint.map(destUrlResolver),
-        revealOptions: {
-            all: resolveOptsGroup(opts.all),
-            client: resolveOptsGroup(opts.client),
-            server: resolveOptsGroup(opts.server)
+    function cssUrlResolver(item: IThemeCssRec): IThemeCssRec {
+        return {
+            id: item.id,
+            href: destUrlResolver(item.href)
         }
     }
+    const rcs = config.resources
+    const opts = config.revealOptions
+    const resources: IPageResources = {
+        js: rcs.js.map(destUrlResolver),
+        css: rcs.css.map(destUrlResolver),
+        themeCss: rcs.themeCss.map(cssUrlResolver),
+        cssPrint: rcs.cssPrint.map(destUrlResolver)
+    }
+
+    const revealOptions = {
+        all: resolveOptsGroup(opts.all),
+        client: resolveOptsGroup(opts.client),
+        server: resolveOptsGroup(opts.server)
+    }
+
 
     return fs.readdir(srcDir)
         .then(createFilesToDirs(srcDir))
         .then((dirs: string[]) => dirs.map((dir: string) => ({
-                ...baseGetPageOptions,
+                resources,
+                revealOptions,
                 dir,
                 title: dir,
                 fileName: './index.md'

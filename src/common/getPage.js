@@ -17,13 +17,18 @@ export default function getPage(
     {
         fileName,
         title,
-        js,
-        css,
-        cssPrint,
+        resources,
         revealOptions
     }: IGetPageOptions,
     liveReload?: boolean = false
 ): string {
+    const {
+        js,
+        css,
+        themeCss,
+        cssPrint
+    } = resources
+
     return `<!doctype html>
 <html>
     <head>
@@ -32,6 +37,9 @@ export default function getPage(
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">
         ${css.map((cssPath: string) =>
             `<link rel="stylesheet" href="${cssPath}">`
+        ).join("\n")}
+        ${themeCss.map(({id, href}) =>
+            `<link rel="stylesheet" href="${href}"${id ? `id="${id}"` : ''}>`
         ).join("\n")}
         ${cssPrint.map((cssPath: string) =>
             `<link rel="stylesheet" href="${cssPath}" media="print">`

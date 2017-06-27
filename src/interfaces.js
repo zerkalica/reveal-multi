@@ -31,21 +31,31 @@ export interface IRevealOptions {
     client: $Shape<IRevealOptionGroup>;
 }
 
+export interface IThemeCssRec {
+    id: string;
+    href: string;
+}
+
+export interface IPageResources {
+    js: string[];
+    css: string[];
+    themeCss: IThemeCssRec[];
+    cssPrint: string[];
+}
+
 export interface IConfig {
     baseUrl: string;
     port: number;
     removeDest: boolean;
     resourceDirs: string[];
-    js: string[];
-    css: string[];
-    cssPrint: string[];
+
+    resources: IPageResources;
+
     revealOptions: IRevealOptions;
 }
 
 export interface IGetPageOptions {
-    css: string[];
-    cssPrint: string[];
-    js: string[];
+    resources: IPageResources;
     dir: string;
     title: string;
     fileName: string;
