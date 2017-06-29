@@ -17,7 +17,7 @@ import getIndex from '../common/getIndex'
 
 import createFilesToDirs from './createFilesToDirs'
 
-export default function createRevealData(
+export default function getPageOptions(
     {
         srcDir,
         config
@@ -26,13 +26,13 @@ export default function createRevealData(
         config: IConfig;
     }
 ): Promise<IGetPageOptions[]> {
-    const common = 'common'
+    const common = config.commonDir
     const {baseUrl} = config
     const destUrlResolver = createResourceResolver(
         (moduleName: string) =>
             moduleName === 'root'
                 ? baseUrl
-                : `${baseUrl}/${common}${moduleName === 'common' ? '' : `/${moduleName}`}`
+                : `${baseUrl}/${common}${moduleName === common ? '' : `/${moduleName}`}`
     )
     function destDepResolver(dep: IRevealDep): IRevealDep {
         return {
@@ -68,7 +68,6 @@ export default function createRevealData(
         client: resolveOptsGroup(opts.client),
         server: resolveOptsGroup(opts.server)
     }
-
 
     return fs.readdir(srcDir)
         .then(createFilesToDirs(srcDir))

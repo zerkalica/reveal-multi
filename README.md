@@ -62,6 +62,7 @@ reveal-multi options:
 
 ```
   -h, --help     This help
+  -c  --create   Create generic project in src
   -e  --examples Run dev server with examples
   -s, --server   Run dev server
   -v, --verbose  Verbose output

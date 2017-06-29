@@ -46,6 +46,7 @@ export interface IPageResources {
 export interface IConfig {
     baseUrl: string;
     port: number;
+    commonDir: string;
     removeDest: boolean;
     resourceDirs: string[];
 
@@ -73,12 +74,19 @@ export interface IBuildOptions {
     destDir: string;
 }
 
+export interface IBuildResource {
+    in: string;
+    out: string;
+}
+
 export interface IBuildInfo {
     config: IConfig;
     options: IBuildOptions;
     pages: IGetPageOptions[];
+    resources: IBuildResource[];
 }
 
 export interface IRunOptions extends IBuildOptions {
     runServer: boolean;
+    createGeneric: boolean;
 }

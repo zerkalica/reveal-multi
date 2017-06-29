@@ -11,10 +11,14 @@ import createServer from './createServer'
 
 export default function revealMultiCli(options: IRunOptions): Promise<void> {
     let result: Promise<void>
-
-    if (options.runServer) {
+    if (options.createGeneric) {
+        result = fs.ensureDir(options.srcDir)
+            .then(() => fs.copy(path.join(__dirname, '..', 'template'), options.srcDir))
+            .then(() => {
+                console.log('Created generic project in ' + options.srcDir)
+            })
+    } else if (options.runServer) {
         result = getBuildInfo(options)
-            .then(createStaticSite)
             .then(createServer)
             .then((server: Server) => {
                 console.log(`open http://localhost:${server.address().port}/`)

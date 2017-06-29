@@ -6,25 +6,34 @@ var revealMultiCli = require('reveal-multi/dist/revealMultiCli').default
 
 var argsBuilder = yargs
     .usage('$0 --server --in --out --verbose')
+    .example('$0 --server')
+    .epilog('For more information see https://github.com/zerkalica/reveal-multi')
+
+    .alias('c', 'create')
+    .describe('create', 'Directory generic project in src/dir')
+
     .alias('s', 'server')
-    .alias('v', 'verbose')
-    .alias('e', 'examples')
-    .alias('i', 'in')
-    .alias('o', 'out')
-    .example('$0 --server --in=./src --out=./docs')
     .boolean('server')
-    .boolean('example')
+    .describe('server', 'Run dev server')
+
+    .alias('v', 'verbose')
     .boolean('verbose')
+    .describe('verbose', 'Verbose output')
+
+    .alias('e', 'examples')
+    .boolean('example')
+    .describe('examples', 'Run dev server with examples')
+
+    .alias('i', 'in')
+    .describe('in', 'Root directory with projects')
     .default('in', 'src')
+
+    .alias('o', 'out')
+    .describe('out', 'Destination directory')
     .default('out', 'docs')
+
     .help('h')
     .alias('h', 'help')
-    .describe('examples', 'Run dev server with examples')
-    .describe('verbose', 'Verbose output')
-    .describe('server', 'Run dev server')
-    .describe('in', 'Root directory with projects')
-    .describe('out', 'Destination directory')
-    .epilog('For more information see https://github.com/zerkalica/reveal-multi')
 
 var args = argsBuilder.argv
 
@@ -36,14 +45,14 @@ if (args.examples) {
     revealMultiCli({
         srcDir: path.join(__dirname, '..', 'examples'),
         destDir: 'reveal-multi-example-docs',
-        runServer: true
+        runServer: true,
+        createGeneric: false
     })
 } else {
-    var options = {
+    revealMultiCli({
         srcDir: args.in,
         destDir: args.out,
-        runServer: args.server
-    }
-
-    revealMultiCli(options)
+        runServer: args.server,
+        createGeneric: args.create
+    })
 }

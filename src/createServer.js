@@ -80,6 +80,7 @@ function createSocketIO(httpServer: http.Server): () => void {
 export default function createServer(
     {
         options,
+        resources,
         pages,
         config
     }: IBuildInfo,
@@ -107,7 +108,12 @@ export default function createServer(
         }),
         dirs
     }))
-    app.use('/common', serveStatic(path.join(destDir, 'common')))
+
+    resources.forEach((rec) => {
+        app.use('/' + config.commonDir + '/' + rec.out, serveStatic(rec.in))
+    })
+
+    app.use('/' + config.commonDir, serveStatic(path.join(destDir, config.commonDir)))
     app.use(SrMdl({
         livereload: {
             exts: ['md']

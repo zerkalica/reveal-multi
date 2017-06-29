@@ -6,6 +6,7 @@ const defaultConfig: IConfig = {
     removeDest: true,
     baseUrl: '..',
     port: 8080,
+    commonDir: 'common',
     resourceDirs: [
         '{reveal.js}/css',
         '{reveal.js}/js',

@@ -15,22 +15,16 @@ export default function createStaticSite(
     const {
         config,
         pages,
-        options
+        options,
+        resources
     } = info
     const dirs = pages.map((opts: IGetPageOptions) => opts.dir)
 
     const {srcDir, destDir} = options
-    const common = 'common'
-    const commonDir = path.join(destDir, 'common')
-    const npmModuleResolver = createResourceResolver(createModulePathResolve())
-    const destDirResolver = createResourceResolver(
-        (moduleName: string) => moduleName === 'root'
-            ? destDir
-            : path.join(commonDir, moduleName)
-    )
+    const commonDir = path.join(destDir, config.commonDir)
 
-    function copyDirectory(resourceDir: string): Promise<void> {
-        return fs.copy(npmModuleResolver(resourceDir), destDirResolver(resourceDir))
+    function copyDirectory(rd: {in: string, out: string}): Promise<void> {
+        return fs.copy(rd.in, path.join(commonDir, rd.out))
     }
 
     return (config.removeDest
@@ -38,7 +32,7 @@ export default function createStaticSite(
         : fs.ensureDir(commonDir)
     )
         .then(() => Promise.all([
-            Promise.all(config.resourceDirs.map(copyDirectory)),
+            Promise.all(resources.map(copyDirectory)),
             fs.copy(srcDir, destDir)
         ]))
         .then(() => Promise.all([

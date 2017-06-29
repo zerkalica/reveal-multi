@@ -5,8 +5,9 @@ import path from 'path'
 
 import defaultConfig from './defaultConfig'
 import merge from './merge'
-import createRevealData from './createRevealData'
-import type {IBuildInfo, IBuildOptions, IConfig, IGetPageOptions} from '../interfaces'
+import getPageOptions from './getPageOptions'
+import getResources from './getResources'
+import type {IBuildInfo, IBuildResource, IBuildOptions, IConfig, IGetPageOptions} from '../interfaces'
 
 function bufferToObject<V: Object>(buf: Buffer): V {
     return JSON.parse(buf.toString())
@@ -25,11 +26,17 @@ export default function getBuildInfo(options: IBuildOptions): Promise<IBuildInfo
         )
         .then((config: IConfig) => Promise.all([
             config,
-            createRevealData({destDir, srcDir, config})
+            getPageOptions({srcDir, config}),
+            getResources({
+                destDir,
+                commonDir: path.join(destDir, config.commonDir),
+                resourceDirs: config.resourceDirs
+            })
         ]))
-        .then(([config, pages]: [IConfig, IGetPageOptions[]]) => ({
+        .then(([config, pages, resources]: [IConfig, IGetPageOptions[], IBuildResource[]]) => ({
             config,
             options,
-            pages
+            pages,
+            resources
         }))
 }
