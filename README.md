@@ -46,7 +46,7 @@ Commit and push generated my-slides/docs to github pages.
 
 or
 
-### Build and run static server
+### Run static server
 
 ```
 reveal-multi --server

@@ -39,6 +39,7 @@
     "rgs",
     "bin",
     "examples",
+    "template",
     "flow-typed",
     "dist"
   ],
